@@ -32,9 +32,8 @@ export function createCar(garage, body, callback) {
 
 
 export function removeCar(history, car) {
-  fetch(`${BASE_URL}/cars/${car.id}`, {
-    method: 'DELETE',
-  }).then(response => response.json())
+  fetch(`${BASE_URL}/cars/${car.id}`, { method: 'DELETE' })
+    .then(r => r.json())
     .then(() => history.push(""));
 
   return {

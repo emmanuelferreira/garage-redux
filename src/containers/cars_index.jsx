@@ -29,6 +29,7 @@ class CarsIndex extends Component {
         {this.props.cars.map((car) => {
           return (
             <div key={car.id} className="car-smallad">
+              <Link to={`/cars/${car.id}`} key={car.id} />
               <img className="car-logo" src={`https://source.unsplash.com/featured/?${car.brand} ${car.model}`} alt="car" />
               <div className="car-details">
                 <span>{car.brand} - {car.model}</span>

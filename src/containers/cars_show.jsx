@@ -6,38 +6,48 @@ import { removeCar } from '../actions';
 import Aside from '../components/aside';
 
 class CarsShow extends Component {
-  componentWillMount() {
-    this.props.getCar(carID);
+  handleClick = () => {
+    this.props.removeCar(this.props.history, this.props.car);
   }
 
   render() {
+    const car = this.props.car;
+    if (!car) {
+      return (
+        <Aside key="aside" garage={this.props.garage}>
+          <Link to="/">Back to list</Link>
+        </Aside>);
+    }
     return [
-      <Aside key="aside" garage={this.props.garage} >
-        <Link to="/cars/new"> Add car </Link>
+      <Aside key="aside" garage={this.props.garage}>
+        <Link to="/">Back to list</Link>
       </Aside>,
-      <div className="list-container" key="cars">
-        {this.props.cars.map((car) => {
-          return (
-            <div key={car.id} className="car-smallad">
-              <img className="car-logo" src={`https://source.unsplash.com/featured/?${car.brand} ${car.model}`} alt="car" />
-              <div className="car-details">
-                <span>{car.brand} - {car.model}</span>
-                <ul>
-                  <li> <strong>Owner:</strong> {car.owner} </li>
-                </ul>
-              </div>
-            </div>
-          );
-        })}
+      <div className="car-container" key="car">
+        <div className="car-card">
+          <img className="car-picture" src={`https://source.unsplash.com/featured/?${car.brand} ${car.model}`} alt="car" />
+          <div className="car-details">
+            <span>{car.brand} - {car.model}</span>
+            <ul>
+              <li><strong>Owner:</strong> {car.owner}</li>
+            </ul>
+            <span className="plate">{car.plate}</span>
+          </div>
+          <button className="delete" onClick={this.handleClick}>
+            <i className="fa fa-trash-o" aria-hidden="true" />
+            Delete
+          </button>
+        </div>
       </div>
     ];
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
+  const id = parseInt(ownProps.match.params.id);
   return {
+    car: state.cars.find(car => car.id === id),
     garage: state.garage
   };
 }
 
-export default connect(mapStateToProps, { getCar, removeCar })(CarsShow);
+export default connect(mapStateToProps, { removeCar })(CarsShow);
