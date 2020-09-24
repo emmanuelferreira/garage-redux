@@ -1,19 +1,44 @@
 // TODO: add and export your own actions
-// const BASE_URL = 'https://wagon-chat.herokuapp.com';
+const BASE_URL = 'https://wagon-garage-api.herokuapp.com';
 
-const FETCH_CARS = 'FETCH_CARS';
-
-const cars = [
-  { id: 1, brand: 'Peugeot', model: '106', owner: 'John', plate: 'WOB-ED-42' },
-  { id: 2, brand: 'Renault', model: 'Scenic', owner: 'Paul', plate: 'AAA-12-BC' },
-  { id: 3, brand: 'Aston Martin', model: 'DB Mark III', owner: 'James', plate: '418-ED-94' },
-  { id: 4, brand: 'VW', model: 'Beetle', owner: 'George', plate: '1234-XD-75' }
-];
+export const FETCH_CARS = 'FETCH_CARS';
+export const CAR_CREATED = 'CAR_CREATED';
+export const CAR_REMOVED = 'CAR_REMOVED';
 
 // eslint-disable-next-line import/prefer-default-export
-export function fetchCars() {
+export function fetchCars(garage) {
+  const promise = fetch(`${BASE_URL}/${garage}/cars`)
+    .then(response => response.json());
+
   return {
     type: FETCH_CARS,
-    payload: cars
+    payload: promise
+  };
+}
+
+export function createCar(garage, body, callback) {
+  const request = fetch(`${BASE_URL}/${garage}/cars`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).then(response => response.json())
+    .then(callback);
+
+  return {
+    type: CAR_CREATED,
+    payload: request
+  };
+}
+
+
+export function removeCar(history, car) {
+  fetch(`${BASE_URL}/cars/${car.id}`, {
+    method: 'DELETE',
+  }).then(response => response.json())
+    .then(() => history.push(""));
+
+  return {
+    type: CAR_REMOVED,
+    payload: car
   };
 }
